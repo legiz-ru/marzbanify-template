@@ -25,7 +25,7 @@
 
 - The design is simple and intuitive, with minimal code.
 - Theme switching: system, light, and dark modes.
-- Language switching: English and Russian.
+- Language switching: English, Chinese, and Russian.
 - Guides are provided for PC, Android, and iOS.
 - Automatic detection of the user's theme, language, and device.
 
