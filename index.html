@@ -31,7 +31,8 @@
         padding-top: .5rem;
       }
       
-      .my-block, .my-block-big {
+      .my-block,
+      .my-block-big {
         border-radius: var(--bs-border-radius-xl);
       }
       
@@ -88,7 +89,21 @@
           color: transparent;
         }
       }
-      
+
+      .my-modal {
+        padding-right: 1rem;
+        padding-left: 1rem;
+        padding-bottom: 1rem;
+
+        .modal-header {
+          padding: 1rem .5rem;
+        }
+
+        .modal-body {
+          background-color: #fff;
+        }
+      }
+
       .my-step-icon {
         color: #57b5ef;
         display: block;
@@ -117,7 +132,8 @@
       [data-bs-theme='light'] {
         --bs-body-bg: #fff;
       
-        .my-block, .my-block-big {
+        .my-block,
+        .my-block-big {
           background-color: #f6f5f4;
         }
       
@@ -130,7 +146,11 @@
             color: rgba(0, 0, 0, .5);
           }
         }
-      
+
+        .my-modal {
+          background-color: #fff;
+        }
+
         .my-nav-link {
           --bs-nav-link-color: rgba(var(--bs-emphasis-color-rgb), .65);
           --bs-nav-link-hover-color: rgba(var(--bs-emphasis-color-rgb), .9);
@@ -140,7 +160,8 @@
       [data-bs-theme='dark'] {
         --bs-body-bg: #151515;
       
-        .my-block, .my-block-big {
+        .my-block,
+        .my-block-big {
           background-color: #232323;
         }
       
@@ -153,7 +174,11 @@
             color: rgba(255, 255, 255, .5);
           }
         }
-      
+
+        .my-modal {
+          background-color: #232323;
+        }
+
         .my-nav-link {
           --bs-nav-link-color: rgba(var(--bs-emphasis-color-rgb), .65);
           --bs-nav-link-hover-color: rgba(var(--bs-emphasis-color-rgb), .9);
@@ -208,6 +233,15 @@
       <symbol id="translate" viewBox="0 0 16 16">
         <path d="M4.545 6.714 4.11 8H3l1.862-5h1.284L8 8H6.833l-.435-1.286zm1.634-.736L5.5 3.956h-.049l-.679 2.022z"/>
         <path d="M0 2a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zm7.138 9.995q.289.451.63.846c-.748.575-1.673 1.001-2.768 1.292.178.217.451.635.555.867 1.125-.359 2.08-.844 2.886-1.494.777.665 1.739 1.165 2.93 1.472.133-.254.414-.673.629-.89-1.125-.253-2.057-.694-2.82-1.284.681-.747 1.222-1.651 1.621-2.757H14V8h-3v1.047h.765c-.318.844-.74 1.546-1.272 2.13a6 6 0 0 1-.415-.492 2 2 0 0 1-.94.31"/>
+      </symbol>
+      <symbol id="qr" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M2 0C0.895431 0 0 0.89543 0 2V5.5C0 6.60457 0.89543 7.5 2 7.5H5.5C6.60457 7.5 7.5 6.60457 7.5 5.5V2C7.5 0.895431 6.60457 0 5.5 0H2ZM2.5 1.5C1.94772 1.5 1.5 1.94772 1.5 2.5V5C1.5 5.55228 1.94772 6 2.5 6H5C5.55228 6 6 5.55228 6 5V2.5C6 1.94772 5.55228 1.5 5 1.5H2.5Z"/>
+        <path d="M2.25 2.75C2.25 2.47386 2.47386 2.25 2.75 2.25H4.75C5.02614 2.25 5.25 2.47386 5.25 2.75V4.75C5.25 5.02614 5.02614 5.25 4.75 5.25H2.75C2.47386 5.25 2.25 5.02614 2.25 4.75V2.75Z"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5 0C9.39543 0 8.5 0.89543 8.5 2V5.5C8.5 6.60457 9.39543 7.5 10.5 7.5H14C15.1046 7.5 16 6.60457 16 5.5V2C16 0.895431 15.1046 0 14 0H10.5ZM11 1.5C10.4477 1.5 10 1.94772 10 2.5V5C10 5.55228 10.4477 6 11 6H13.5C14.0523 6 14.5 5.55228 14.5 5V2.5C14.5 1.94772 14.0523 1.5 13.5 1.5H11Z"/>
+        <path d="M10.75 2.75C10.75 2.47386 10.9739 2.25 11.25 2.25H13.25C13.5261 2.25 13.75 2.47386 13.75 2.75V4.75C13.75 5.02614 13.5261 5.25 13.25 5.25H11.25C10.9739 5.25 10.75 5.02614 10.75 4.75V2.75Z"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M2 8.5C0.895431 8.5 0 9.39543 0 10.5V14C0 15.1046 0.89543 16 2 16H5.5C6.60457 16 7.5 15.1046 7.5 14V10.5C7.5 9.39543 6.60457 8.5 5.5 8.5H2ZM2.5 10C1.94772 10 1.5 10.4477 1.5 11V13.5C1.5 14.0523 1.94772 14.5 2.5 14.5H5C5.55228 14.5 6 14.0523 6 13.5V11C6 10.4477 5.55228 10 5 10H2.5Z"/>
+        <path d="M2.25 11.25C2.25 10.9739 2.47386 10.75 2.75 10.75H4.75C5.02614 10.75 5.25 10.9739 5.25 11.25V13.25C5.25 13.5261 5.02614 13.75 4.75 13.75H2.75C2.47386 13.75 2.25 13.5261 2.25 13.25V11.25Z"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5 8.5C9.39543 8.5 8.5 9.39543 8.5 10.5V14C8.5 15.1046 9.39543 16 10.5 16H14C15.1046 16 16 15.1046 16 14V10.5C16 9.39543 15.1046 8.5 14 8.5H10.5ZM11 10C10.4477 10 10 10.4477 10 11V13.5C10 14.0523 10.4477 14.5 11 14.5H13.5C14.0523 14.5 14.5 14.0523 14.5 13.5V11C14.5 10.4477 14.0523 10 13.5 10H11Z"/>
       </symbol>
     </svg>
     <div class="container my-container py-3" x-data>
@@ -278,7 +312,12 @@
       </header>
       <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
         <span class="fs-3 fw-bold me-auto" x-text="$t('subscription')"></span>
-        <button class="btn my-btn" id="btn-copy-link" type="button" x-text="$t('copyLink')"></button>
+        <div>
+          <button class="btn my-btn me-2" id="btn-copy-link" type="button" x-text="$t('copyLink')"></button>
+          <button class="btn my-btn" id="btn-show-qr" data-bs-toggle="modal" data-bs-target="#qr-modal">
+            <svg class="bi"><use href="#qr"></use></svg>
+          </button>
+        </div>
         <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
           <div class="toast my-toast" id="toast-copy-link" role="alert" aria-atomic="true" aria-live="assertive">
             <div class="d-flex">
@@ -286,6 +325,19 @@
                 <span x-text="$t('copiedToClipboard')"></span>
               </div>
               <button type="button" class="btn-close btn-close-white m-auto me-3" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="qr-modal" tabindex="-1" aria-labelledby="qr-modal-label">
+          <div class="modal-sm modal-dialog modal-dialog-centered">
+            <div class="modal-content my-modal border border-0 rounded-4">
+              <div class="modal-header border border-0">
+                <h1 class="modal-title fs-5 fw-bold me-auto" id="qr-modal-label" x-text="$t('subscription')"></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body d-flex align-items-center justify-content-center">
+                <div id="qr-code"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -494,6 +546,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs-i18n@2.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
     <script>
       const META_THEME_COLORS = {light: '#fff', dark: '#151515'};
       const MESSAGES = {
@@ -867,11 +920,11 @@
       
         const btnGuide = document.getElementById('btn-guide');
         const btnPrefGuideTab = document.querySelector(
-          `[data-bs-target="${getPreferredGuideTab()}"]`,
+          `.dropdown-item[data-bs-target="${getPreferredGuideTab()}"]`,
         );
         bootstrap.Tab.getOrCreateInstance(btnPrefGuideTab).show();
         showActiveDropdownButton(btnGuide, btnPrefGuideTab);
-        document.querySelectorAll('[data-bs-target]').forEach(btn => {
+        document.querySelectorAll('.dropdown-item[data-bs-target]').forEach(btn => {
           btn.addEventListener('click', () => {
             showActiveDropdownButton(btnGuide, btn);
           });
@@ -881,6 +934,15 @@
         document.getElementById('btn-copy-link').addEventListener('click', () => {
           navigator.clipboard.writeText('{{ user.subscription_url }}');
           bootstrap.Toast.getOrCreateInstance(toastCopyLink).show();
+        });
+
+        const qrCode = new QRCode(document.getElementById('qr-code'), {
+          text: '{{ user.subscription_url }}',
+          width: 256,
+          height: 256,
+          colorDark: '#000',
+          colorLight: '#fff',
+          correctLevel: QRCode.CorrectLevel.H,
         });
       });
     </script>
