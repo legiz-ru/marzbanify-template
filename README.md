@@ -1,16 +1,22 @@
-<h3 align="center">Marzbanify Template</h3>
+<h3 align="center">Marzbanify Template fork</h3>
 
 <p align="center">
   Simple, beautiful, and user-friendly HTML template for <a href="https://github.com/Gozargah/Marzban">Marzban</a> subscription page
   <br>
-  <a href="https://denisromanov.ru/projects/marzbanify-template-demo"><strong>Live demo »</strong></a>
+  Replaced apps:
+  <br>
+  Android: <a href="https://github.com/MetaCubeX/ClashMetaForAndroid">Clash Meta</a>
+  <br>
+  PC: <a href="https://github.com/clash-verge-rev/clash-verge-rev">Clash Verge Rev</a>
+  <br>
+  iOS: <a href="https://apps.apple.com/app/sing-box-vt/id6673731168">sing-box</a>
   <br>
   <br>
-  <a href="https://github.com/dermv/marzbanify-template/tree/main#features">Features</a>
+  <a href="https://github.com/legiz-ru/marzbanify-template/tree/main#features">Features</a>
   ·
-  <a href="https://github.com/dermv/marzbanify-template/tree/main#installation">Installation</a>
+  <a href="https://github.com/legiz-ru/marzbanify-template/tree/main#installation">Installation</a>
   ·
-  <a href="https://github.com/dermv/marzbanify-template/tree/main#personalization">Personalization</a>
+  <a href="https://github.com/legiz-ru/marzbanify-template/tree/main#personalization">Personalization</a>
 </p>
 
 <p>
