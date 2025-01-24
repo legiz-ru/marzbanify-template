@@ -12,7 +12,6 @@ jobs:
     - name: Checkout Target Repository
       uses: actions/checkout@v3
       with:
-        repository: legiz-ru/marzbanify-template
         ref: streletskiy # Ветка, куда будут импортированы данные
 
     # 2. Клонируем репозиторий-источник
@@ -34,15 +33,4 @@ jobs:
 
     # 5. Проверяем изменения и коммитим
     - name: Commit Changes
-      run: |
-        git add .
-        if git diff --cached --quiet; then
-          echo "No changes to commit"
-        else
-          git commit -m "Automated data import from marzban-sub-page"
-        fi
-
-    # 6. Пушим изменения в ветку streletskiy
-    - name: Push Changes
-      run: |
-        git push origin streletskiy
+      
