@@ -1,0 +1,48 @@
+name: Import Data from marzban-sub-page
+
+on:
+  workflow_dispatch: # Позволяет запускать вручную через интерфейс GitHub Actions
+
+jobs:
+  import-data:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Проверяем код из целевого репозитория
+    - name: Checkout Target Repository
+      uses: actions/checkout@v3
+      with:
+        repository: legiz-ru/marzbanify-template
+        ref: streletskiy # Ветка, куда будут импортированы данные
+
+    # 2. Клонируем репозиторий-источник
+    - name: Clone Source Repository
+      run: |
+        git clone --depth 1 https://github.com/streletskiy/marzban-sub-page.git source-repo
+
+    # 3. Копируем данные из репозитория-источника в целевой репозиторий
+    - name: Copy Data
+      run: |
+        cp -r source-repo/* .
+        cp -r source-repo/.* . || true # Копирование скрытых файлов (например, .gitignore)
+
+    # 4. Настраиваем Git
+    - name: Configure Git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+    # 5. Проверяем изменения и коммитим
+    - name: Commit Changes
+      run: |
+        git add .
+        if git diff --cached --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Automated data import from marzban-sub-page"
+        fi
+
+    # 6. Пушим изменения в ветку streletskiy
+    - name: Push Changes
+      run: |
+        git push origin streletskiy
