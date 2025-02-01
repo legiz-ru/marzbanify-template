@@ -6,183 +6,387 @@
     <meta name="description" content="A service for those who love being here but appearing there — travel the world without packing a suitcase!">
     <meta name="theme-color" content="#fff">
     <title>Подписка {{ user.username }}</title>
+    <script>
+      // Color mode toggler.
+
+      const COLOR_SCHEME = '(prefers-color-scheme: dark)';
+
+      // Defines the default website theme used when the user hasn't
+      // selected a different one.
+      const DEFAULT_THEME = 'system';
+      // Colors for light and dark themes in the theme-color value,
+      // used to change browser interface colors, like the top bar in Safari.
+      const META_THEME_COLORS = { light: '#fff', dark: '#151515' };
+
+      function getUserTheme() {
+        return localStorage.getItem('theme') || DEFAULT_THEME;
+      }
+
+      function setTheme(theme) {
+        if (theme === 'system') {
+          theme = window.matchMedia(COLOR_SCHEME).matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-bs-theme', theme);
+        document
+          .querySelector(`[name='theme-color']`)
+          .setAttribute('content', META_THEME_COLORS[theme]);
+      }
+
+      setTheme(getUserTheme());
+      window.matchMedia(COLOR_SCHEME).addEventListener('change', () => {
+        if (getUserTheme() === 'system') setTheme('system');
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const btnTheme = document.getElementById('btn-theme');
+        document.querySelectorAll('.my-dropdown-item-theme').forEach(item => {
+          item.addEventListener('click', () => {
+            localStorage.setItem('theme', item.dataset.themeVal);
+            setTheme(item.dataset.themeVal);
+            showActiveDropdownItem(
+              btnTheme,
+              item,
+              document.querySelector('.my-dropdown-item-theme.active'),
+            );
+          });
+        });
+        
+        showActiveDropdownItem(
+          btnTheme,
+          document.querySelector(`[data-theme-val="${getUserTheme()}"]`),
+          document.querySelector('.my-dropdown-item-theme.active'),
+        );
+      })
+    </script>
     <link href="https://raw.githubusercontent.com/dermv/marzbanify-template/refs/heads/main/img/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180">
     <link href="https://raw.githubusercontent.com/dermv/marzbanify-template/refs/heads/main/img/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png">
     <link href="https://raw.githubusercontent.com/dermv/marzbanify-template/refs/heads/main/img/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH">
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+
+      :root {
+        --bs-body-font-family: "Inter", sans-serif;
+      }
+
+      [data-bs-theme='light'] {
+        --bs-body-bg: #fff;
+
+        --my-gray-color: #f6f5f4;
+        --my-dark-gray-color: #eaeaea;
+        --my-alpha-gray-color: rgba(50, 50, 50, .75);
+        --my-alpha-dark-gray-color: rgba(0, 0, 0, .15);
+        --my-emphasis-focus-shadow-rgb: 0, 0, 0;
+
+        --my-heading-color: rgb(30, 25, 20);
+        --my-content-color: rgba(0, 0, 0, .65);
+        --my-dropdown-bg: #fff;
+        --my-dropdown-link-hover-bg: rgba(55, 53, 47, .05);
+        --my-modal-bg: #fff;
+      }
+
+      [data-bs-theme='dark'] {
+        --bs-body-bg: #151515;
+
+        --my-gray-color: #232323;
+        --my-dark-gray-color: #1c1c1c;
+        --my-alpha-gray-color: rgba(255, 255, 255, .5);
+        --my-alpha-dark-gray-color: rgba(255, 255, 255, .15);
+        --my-emphasis-focus-shadow-rgb: 255, 255, 255;
+
+        --my-heading-color: rgb(225, 225, 225);
+        --my-content-color: rgba(255, 255, 255, .55);
+        --my-dropdown-bg: #2c2c2c;
+        --my-dropdown-link-hover-bg: rgba(255, 255, 255, .05);
+        --my-modal-bg: #232323;
+      }
+
       .bi {
+        fill: currentColor;
         width: 1em;
         height: 1em;
-        vertical-align: -.125em;
-        fill: currentcolor;
       }
-      
-      .tab-pane {
-        counter-reset: guide-step 0;
+
+      .dropdown-toggle::after {
+        mask: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M8.7 13.7c.4-.4 1.1-.4 1.5 0l6 6 6-6c.4-.4 1.1-.4 1.5 0s.4 1.1 0 1.5L17 21.9c-.4.4-1.1.4-1.5 0l-6.7-6.7c-.5-.6-.5-1.1-.1-1.5'/%3E%3C/svg%3E") 50% 50% / cover no-repeat;
+        float: right;
+        width: 1em;
+        height: 1.25em;
+        margin-right: -3px;
+        margin-left: 3px;
+        background-color: currentColor;
       }
-      
-      .my-block {
-        padding: 1rem;
+
+      .modal-backdrop {
+        --bs-backdrop-opacity: .75;
       }
-      
-      .my-block-big {
-        padding: 1.5rem;
-        padding-top: .5rem;
+
+      .my-container {
+        max-width: 1024px;
+      }
+
+      .my-navbar {
+        --bs-navbar-nav-link-padding-x: .75rem;
+      }
+
+      .my-navbar .navbar-toggler {
+        --bs-navbar-toggler-border-color: transparent;
+        --bs-navbar-toggler-padding-x: 0;
+        --bs-navbar-toggler-padding-y: 0;
+      }
+
+      @media (max-width: 576px) {
+        .my-navbar .navbar-nav {
+          --bs-nav-link-padding-y: .75rem;
+        }
+
+        .my-navbar .nav-item .nav-link {
+          border-top: 1px solid var(--my-alpha-dark-gray-color);
+        }
+
+        .my-navbar .dropdown-menu {
+          margin-bottom: 1rem;
+        }
+      }
+
+      .my-nav-link,
+      .my-nav-outline {
+        display: flex;
+        align-items: center;
+      }
+
+      .my-nav-link:focus-visible,
+      .my-nav-outline:focus-visible {
+        border-radius: var(--bs-border-radius-lg);
+        box-shadow: 0 0 0 .25rem var(--my-alpha-gray-color);
+      }
+
+      .my-nav-link .bi,
+      .my-nav-outline .bi {
+        margin-right: .5rem;
+        font-size: 1.25rem;
+      }
+
+      .my-nav-link-text {
+        margin-right: auto;
+      }
+
+      .my-nav-outline {
+        --bs-nav-link-padding-x: .85rem;
+        --bs-nav-link-padding-y: .25rem;
+        --bs-nav-link-color: var(--my-heading-color);
+        --bs-nav-link-hover-color: var(--my-heading-color);
+        border: 1px solid var(--my-alpha-dark-gray-color);
+        border-radius: var(--bs-border-radius-lg);
+      }
+
+      .my-nav-outline:hover {
+        background-color: var(--my-gray-color);
+      }
+
+      .my-nav-outline.show {
+        background-color: var(--my-gray-color);
+      }
+
+      .my-dropdown .dropdown-menu {
+        --bs-dropdown-padding-x: .25rem;
+        --bs-dropdown-padding-y: .25rem;
+        --bs-dropdown-spacer: 0;
+        --bs-dropdown-bg: var(--my-dropdown-bg);
+        --bs-dropdown-border-color: none;
+        --bs-dropdown-border-radius: var(--bs-border-radius-lg);
+        --bs-dropdown-link-color: var(--my-heading-color);
+        --bs-dropdown-link-hover-color: var(--my-heading-color);
+        --bs-dropdown-link-hover-bg: var(--my-dropdown-link-hover-bg);
+        --bs-dropdown-link-active-color: var(--my-heading-color);
+        --bs-dropdown-link-active-bg: var(--my-dropdown-bg);
+        --bs-dropdown-item-padding-x: 1rem;
+        --bs-dropdown-item-padding-y: .5rem;
+        --bs-dropdown-item-border-radius: var(--bs-border-radius);
+        box-shadow: 0 .25rem 1rem rgba(0, 0, 0, .175);
+      }
+
+      .my-dropdown .dropdown-item {
+        display: flex;
+        align-items: center;
+      }
+
+      .my-dropdown .dropdown-item span {
+        margin-right: 2rem;
+      }
+
+      .my-dropdown .dropdown-item.active:hover {
+        background-color: var(--my-dropdown-link-hover-bg);
+      }
+
+      .my-dropdown .dropdown-item:hover:active {
+        background-color: var(--my-dropdown-link-hover-bg);
+      }
+
+      .my-dropdown .my-dropdown-item-icon {
+        margin-right: .5rem;
+        color: var(--my-alpha-gray-color);
+      }
+
+      .my-dropdown .my-dropdown-item-check {
+        margin-left: auto;
+        color: transparent;
+      }
+
+      .my-dropdown .active .my-dropdown-item-check {
+        color: var(--my-heading-color);
+      }
+
+      .my-btn-primary,
+      .my-btn-secondary,
+      .my-btn-neutral,
+      .my-btn-outline {
+        --bs-btn-padding-x: .85rem;
+        --bs-btn-padding-y: .25rem;
+        --bs-btn-color: #fff;
+        --bs-btn-border-radius: var(--bs-border-radius-lg);
+        --bs-btn-hover-color: #fff;
+        --bs-btn-active-color: #fff;
+        --bs-btn-active-border-color: transparent;
+      }
+
+      .my-btn-primary {
+        --bs-btn-bg: rgb(25, 125, 225);
+        --bs-btn-hover-bg: rgb(0, 110, 210);
+        --bs-btn-focus-shadow-rgb: 25, 125, 225;
+        --bs-btn-active-bg: rgb(0, 95, 195);
+      }
+
+      .my-btn-secondary {
+        --bs-btn-color: rgb(25, 125, 225);
+        --bs-btn-bg: rgba(25, 125, 225, .15);
+        --bs-btn-hover-color: rgb(25, 125, 225);
+        --bs-btn-hover-bg: rgba(25, 125, 225, .2);
+        --bs-btn-focus-shadow-rgb: 25, 125, 225;
+        --bs-btn-active-color: rgb(25, 125, 225);
+        --bs-btn-active-bg: rgba(25, 125, 225, .25);
+        --bs-btn-active-border-color: transparent;
+      }
+
+      .my-btn-neutral {
+        --bs-btn-bg: rgb(50, 50, 50);
+        --bs-btn-hover-bg: rgb(65, 65, 65);
+        --bs-btn-focus-shadow-rgb: var(--my-emphasis-focus-shadow-rgb);
+        --bs-btn-active-bg: rgb(75, 75, 75);
+        --bs-btn-disabled-color: #fff;
+        --bs-btn-disabled-bg: rgb(50, 50, 50);
+        --bs-btn-disabled-border-color: transparent;
+      }
+
+      .my-btn-outline {
+        --bs-btn-color: var(--my-heading-color);
+        --bs-btn-bg: transparent;
+        --bs-btn-border-color: var(--my-alpha-dark-gray-color);
+        --bs-btn-hover-color: var(--my-heading-color);
+        --bs-btn-hover-bg: var(--my-gray-color);
+        --bs-btn-hover-border-color: var(--my-alpha-dark-gray-color);
+        --bs-btn-focus-shadow-rgb: var(--my-emphasis-focus-shadow-rgb);
+        --bs-btn-active-color: var(--my-heading-color);
+        --bs-btn-active-bg: var(--my-dark-gray-color);
+        --bs-btn-active-border-color: var(--my-alpha-dark-gray-color);
+      }
+
+      .my-modal {
+        --bs-modal-margin: 1rem;
+        --bs-modal-bg: var(--my-modal-bg);
+        --bs-modal-border-width: 0;
+        --bs-modal-border-radius: var(--bs-border-radius-xl);
+        --bs-modal-header-padding: 1.5rem 1.5rem 0;
+        --bs-modal-header-border-width: 0;
+      }
+
+      @media (min-width: 576px) {
+        .my-modal {
+          --bs-modal-padding: 2rem;
+        }
+      }
+
+      .my-modal .modal-dialog {
+        max-width: 420px;
+      }
+
+      .my-modal .modal-content {
+        padding-bottom: 1.5rem;
+      }
+
+      #qr-code canvas {
+        width: 100%;
+        max-width: 240px;
+        margin-top: .5rem;
+        border-radius: var(--bs-border-radius-xl);
+      }
+
+      @media (max-width: 320px) {
+        .my-row-xs > * {
+          width: 100%;
+        }
       }
       
       .my-block,
       .my-block-big {
         border-radius: var(--bs-border-radius-xl);
+        background-color: var(--my-gray-color);
+      }
+
+      .my-block {
+        padding: 1rem;
       }
       
-      .my-btn {
-        --bs-btn-bg: rgba(35, 131, 226, .15);
-        --bs-btn-color: #2383e2;
-        --bs-btn-hover-bg: rgba(35, 131, 226, .2);
-        --bs-btn-hover-border-color: transparent;
-        --bs-btn-hover-color: #2383e2;
-        --bs-btn-active-bg: rgba(35, 131, 226, .25);
-        --bs-btn-active-border-color: transparent;
-        --bs-btn-active-color: #2383e2;
-        --bs-btn-border-radius: var(--bs-border-radius-xl);
-        --bs-btn-focus-shadow-rgb: 35, 131, 226;
-        --bs-btn-font-weight: 600;
+      .my-block .bi {
+        font-size: 1.5rem;
       }
       
-      .my-color-green {
+      .my-block-big {
+        padding: 1.5rem;
+        padding-top: .75rem;
+      }
+
+      .my-text-blue {
+        color: #0a85d1;
+      }
+
+      .my-text-green {
         color: #1aad3a;
       }
       
-      .my-color-red {
+      .my-text-red {
         color: #ea4e43;
       }
       
-      .my-color-blue {
-        color: #0a85d1;
-      }
-      
-      .my-color-yellow {
+      .my-text-yellow {
         color: #fb3;
       }
       
-      .my-container {
-        max-width: 64rem;
-      }
-      
-      .my-dropdown-menu {
-        --bs-dropdown-border-radius: var(--bs-border-radius-xl);
-        --bs-dropdown-item-padding-x: .75rem;
-        --bs-dropdown-item-padding-y: .5rem;
-        --bs-dropdown-padding-x: .35rem;
-        --bs-dropdown-padding-y: .35rem;
-      
-        li + li {
-          margin-top: .35rem;
-        }
-      
-        .dropdown-item {
-          border-radius: .75rem;
-        }
-      
-        .my-dropdown-item-check {
-          color: transparent;
-        }
+      .my-text-heading {
+        color: var(--my-heading-color);
       }
 
-      .my-modal {
-        padding-right: 1rem;
-        padding-left: 1rem;
-        padding-bottom: 1rem;
-
-        .modal-header {
-          padding: 1rem .5rem;
-        }
-
-        .modal-body {
-          background-color: #fff;
-        }
+      .my-text-content {
+        color: var(--my-content-color);
       }
 
-      .my-step-icon {
-        color: #57b5ef;
+      .my-step-counter {
         display: block;
+        color: #57b5ef;
+        font-weight: 500;
         font-size: 2.5rem;
-        font-weight: 600;
-        margin-bottom: .5rem;
-      
-        user-select: none;
         -moz-user-select: none;
         -webkit-user-select: none;
-      
-        &::after {
-          counter-increment: guide-step;
-          content: counter(guide-step);
-        }
+        user-select: none;
       }
-      
-      .my-toast {
-        --bs-toast-bg: #2383e2;
-        --bs-toast-border-radius: var(--bs-border-radius-xl);
-        --bs-toast-border-width: 0;
-        --bs-toast-color: #fff;
-        --bs-toast-padding-x: 1rem;
+
+      .my-step-counter::after {
+        content: counter(step-counter);
+        counter-increment: step-counter;
       }
-      
-      [data-bs-theme='light'] {
-        --bs-body-bg: #fff;
-      
-        .my-block,
-        .my-block-big {
-          background-color: #f6f5f4;
-        }
-      
-        .my-dropdown-menu {
-          --bs-dropdown-link-hover-bg: #f6f5f4;
-          --bs-dropdown-link-active-bg: #eaeaea;
-          --bs-dropdown-link-active-color: #000;
-      
-          .my-dropdown-item-icon, .active .my-dropdown-item-check {
-            color: rgba(0, 0, 0, .5);
-          }
-        }
 
-        .my-modal {
-          background-color: #fff;
-        }
-
-        .my-nav-link {
-          --bs-nav-link-color: rgba(var(--bs-emphasis-color-rgb), .65);
-          --bs-nav-link-hover-color: rgba(var(--bs-emphasis-color-rgb), .9);
-        }
-      }
-      
-      [data-bs-theme='dark'] {
-        --bs-body-bg: #151515;
-      
-        .my-block,
-        .my-block-big {
-          background-color: #232323;
-        }
-      
-        .my-dropdown-menu {
-          --bs-dropdown-link-hover-bg: #232323;
-          --bs-dropdown-link-active-bg: #333;
-          --bs-dropdown-link-active-color: #fff;
-      
-          .my-dropdown-item-icon, .active .my-dropdown-item-check {
-            color: rgba(255, 255, 255, .5);
-          }
-        }
-
-        .my-modal {
-          background-color: #232323;
-        }
-
-        .my-nav-link {
-          --bs-nav-link-color: rgba(var(--bs-emphasis-color-rgb), .65);
-          --bs-nav-link-hover-color: rgba(var(--bs-emphasis-color-rgb), .9);
-        }
+      .my-tab-pane {
+        counter-reset: step-counter 0;
       }
     </style>
   </head>
@@ -198,15 +402,12 @@
       <symbol id="arrow-down-up" viewBox="0 0 16 16">
         <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>
       </symbol>
-      <symbol id="arrow-right" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
-      </symbol>
       <symbol id="calendar3" viewBox="0 0 16 16">
         <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
         <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
       </symbol>
-      <symbol id="check2" viewBox="0 0 16 16">
-        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+      <symbol id="check-lg" viewBox="0 0 16 16">
+        <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
       </symbol>
       <symbol id="circle-half" viewBox="0 0 16 16">
         <path d="M8 15A7 7 0 1 0 8 1zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16"/>
@@ -224,8 +425,8 @@
       <symbol id="pc-display" viewBox="0 0 16 16">
         <path d="M0 4s0-2 2-2h12s2 0 2 2v6s0 2-2 2h-4q0 1 .25 1.5H11a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1h.75Q6 13 6 12H2s-2 0-2-2zm1.398-.855a.76.76 0 0 0-.254.302A1.5 1.5 0 0 0 1 4.01V10c0 .325.078.502.145.602q.105.156.302.254a1.5 1.5 0 0 0 .538.143L2.01 11H14c.325 0 .502-.078.602-.145a.76.76 0 0 0 .254-.302 1.5 1.5 0 0 0 .143-.538L15 9.99V4c0-.325-.078-.502-.145-.602a.76.76 0 0 0-.302-.254A1.5 1.5 0 0 0 13.99 3H2c-.325 0-.502.078-.602.145"/>
       </symbol>
-      <symbol id="repeat" viewBox="0 0 16 16">
-        <path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192m3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z"/>
+      <symbol id="person-fill" viewBox="0 0 16 16">
+        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
       </symbol>
       <symbol id="sun-fill" viewBox="0 0 16 16">
         <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/>
@@ -234,316 +435,260 @@
         <path d="M4.545 6.714 4.11 8H3l1.862-5h1.284L8 8H6.833l-.435-1.286zm1.634-.736L5.5 3.956h-.049l-.679 2.022z"/>
         <path d="M0 2a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zm7.138 9.995q.289.451.63.846c-.748.575-1.673 1.001-2.768 1.292.178.217.451.635.555.867 1.125-.359 2.08-.844 2.886-1.494.777.665 1.739 1.165 2.93 1.472.133-.254.414-.673.629-.89-1.125-.253-2.057-.694-2.82-1.284.681-.747 1.222-1.651 1.621-2.757H14V8h-3v1.047h.765c-.318.844-.74 1.546-1.272 2.13a6 6 0 0 1-.415-.492 2 2 0 0 1-.94.31"/>
       </symbol>
-      <!-- Icons from elsewhere -->
-      <symbol id="qr" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M2 0C0.895431 0 0 0.89543 0 2V5.5C0 6.60457 0.89543 7.5 2 7.5H5.5C6.60457 7.5 7.5 6.60457 7.5 5.5V2C7.5 0.895431 6.60457 0 5.5 0H2ZM2.5 1.5C1.94772 1.5 1.5 1.94772 1.5 2.5V5C1.5 5.55228 1.94772 6 2.5 6H5C5.55228 6 6 5.55228 6 5V2.5C6 1.94772 5.55228 1.5 5 1.5H2.5Z"/>
-        <path d="M2.25 2.75C2.25 2.47386 2.47386 2.25 2.75 2.25H4.75C5.02614 2.25 5.25 2.47386 5.25 2.75V4.75C5.25 5.02614 5.02614 5.25 4.75 5.25H2.75C2.47386 5.25 2.25 5.02614 2.25 4.75V2.75Z"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5 0C9.39543 0 8.5 0.89543 8.5 2V5.5C8.5 6.60457 9.39543 7.5 10.5 7.5H14C15.1046 7.5 16 6.60457 16 5.5V2C16 0.895431 15.1046 0 14 0H10.5ZM11 1.5C10.4477 1.5 10 1.94772 10 2.5V5C10 5.55228 10.4477 6 11 6H13.5C14.0523 6 14.5 5.55228 14.5 5V2.5C14.5 1.94772 14.0523 1.5 13.5 1.5H11Z"/>
-        <path d="M10.75 2.75C10.75 2.47386 10.9739 2.25 11.25 2.25H13.25C13.5261 2.25 13.75 2.47386 13.75 2.75V4.75C13.75 5.02614 13.5261 5.25 13.25 5.25H11.25C10.9739 5.25 10.75 5.02614 10.75 4.75V2.75Z"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M2 8.5C0.895431 8.5 0 9.39543 0 10.5V14C0 15.1046 0.89543 16 2 16H5.5C6.60457 16 7.5 15.1046 7.5 14V10.5C7.5 9.39543 6.60457 8.5 5.5 8.5H2ZM2.5 10C1.94772 10 1.5 10.4477 1.5 11V13.5C1.5 14.0523 1.94772 14.5 2.5 14.5H5C5.55228 14.5 6 14.0523 6 13.5V11C6 10.4477 5.55228 10 5 10H2.5Z"/>
-        <path d="M2.25 11.25C2.25 10.9739 2.47386 10.75 2.75 10.75H4.75C5.02614 10.75 5.25 10.9739 5.25 11.25V13.25C5.25 13.5261 5.02614 13.75 4.75 13.75H2.75C2.47386 13.75 2.25 13.5261 2.25 13.25V11.25Z"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5 8.5C9.39543 8.5 8.5 9.39543 8.5 10.5V14C8.5 15.1046 9.39543 16 10.5 16H14C15.1046 16 16 15.1046 16 14V10.5C16 9.39543 15.1046 8.5 14 8.5H10.5ZM11 10C10.4477 10 10 10.4477 10 11V13.5C10 14.0523 10.4477 14.5 11 14.5H13.5C14.0523 14.5 14.5 14.0523 14.5 13.5V11C14.5 10.4477 14.0523 10 13.5 10H11Z"/>
-      </symbol>
     </svg>
-    <div class="container my-container py-3" x-data>
-      <header class="d-flex flex-wrap align-items-center gap-2 mb-5">
-        <img src="https://raw.githubusercontent.com/dermv/marzbanify-template/refs/heads/main/img/logo.png" class="me-auto" alt="Logo" width="32" height="32">
-        <ul class="nav align-items-center">
-          <li class="nav-item">
-            <a class="nav-link my-nav-link fw-semibold px-2" href="https://t.me/yourID" rel="noopener noreferrer" target="_blank" x-text="$t('support')"></a>
-          </li>
-          <li class="nav-item">
-            <div class="dropdown">
-              <button class="nav-link my-nav-link dropdown-toggle d-flex align-items-center px-2" id="btn-theme" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <svg class="bi my-dropdown-icon-active fs-5"><use href="#sun"></use></svg>
-              </button>
-              <ul class="dropdown-menu my-dropdown-menu">
+    <header class="navbar my-navbar navbar-expand-sm pb-5" x-data>
+      <div class="container my-container px-3">
+        <a class="navbar-brand" href="#">
+          <img src="https://raw.githubusercontent.com/dermv/marzbanify-template/refs/heads/main/img/logo.png" alt="Logo" width="32" height="32">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-collapse-content" aria-controls="navbar-collapse-content" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse mt-2 mt-sm-0" id="navbar-collapse-content">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link my-nav-link" href="https://t.me/yourID" rel="noopener noreferrer" target="_blank" x-text="$t('support')"></a>
+            </li>
+            <li class="nav-item dropdown my-dropdown">
+              <a class="nav-link my-nav-link dropdown-toggle" id="btn-theme" role="button" data-bs-toggle="dropdown" tabindex="0" aria-expanded="false">
+                <svg class="bi my-nav-link-icon"><use href="#circle-half"></use></svg>
+                <span class="my-nav-link-text"></span>
+              </a>
+              <ul class="dropdown-menu">
                 <li>
-                  <button class="dropdown-item active d-flex align-items-center fw-semibold" type="button" data-theme-value="system" aria-pressed="true">
-                    <svg class="bi my-dropdown-item-icon me-2"><use href="#circle-half"></use></svg>
-                    <span class="me-2" x-text="$t('system')"></span>
-                    <svg class="bi my-dropdown-item-check ms-auto"><use href="#check2"></use></svg>
+                  <button class="dropdown-item my-dropdown-item-theme active" type="button" data-theme-val="system" aria-pressed="true">
+                    <svg class="bi my-dropdown-item-icon"><use href="#circle-half"></use></svg>
+                    <span x-text="$t('system')"></span>
+                    <svg class="bi my-dropdown-item-check"><use href="#check-lg"></use></svg>
                   </button>
                 </li>
                 <li>
-                  <button class="dropdown-item d-flex align-items-center fw-semibold" type="button" data-theme-value="light" aria-pressed="false">
-                    <svg class="bi my-dropdown-item-icon me-2"><use href="#sun-fill"></use></svg>
-                    <span class="me-2" x-text="$t('light')"></span>
-                    <svg class="bi my-dropdown-item-check ms-auto"><use href="#check2"></use></svg>
+                  <button class="dropdown-item my-dropdown-item-theme" type="button" data-theme-val="light" aria-pressed="false">
+                    <svg class="bi my-dropdown-item-icon"><use href="#sun-fill"></use></svg>
+                    <span x-text="$t('light')"></span>
+                    <svg class="bi my-dropdown-item-check"><use href="#check-lg"></use></svg>
                   </button>
                 </li>
                 <li>
-                  <button class="dropdown-item d-flex align-items-center fw-semibold" type="button" data-theme-value="dark" aria-pressed="false">
-                    <svg class="bi my-dropdown-item-icon me-2"><use href="#moon-stars-fill"></use></svg>
-                    <span class="me-2" x-text="$t('dark')"></span>
-                    <svg class="bi my-dropdown-item-check ms-auto"><use href="#check2"></use></svg>
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <div class="dropdown">
-              <button class="nav-link my-nav-link dropdown-toggle d-flex align-items-center px-2" id="btn-lang" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <svg class="bi fs-5"><use href="#translate"></use></svg>
-              </button>
-              <ul class="dropdown-menu my-dropdown-menu">
-                <li>
-                  <button class="dropdown-item active d-flex align-items-center fw-semibold" type="button" data-language-value="en" aria-pressed="true">
-                    <span class="me-2">English</span>
-                    <svg class="bi my-dropdown-item-check ms-auto"><use href="#check2"></use></svg>
-                  </button>
-                </li>
-                <li>
-                  <button class="dropdown-item d-flex align-items-center fw-semibold" type="button" data-language-value="zh" aria-pressed="false">
-                    <span class="me-2">中文</span>
-                    <svg class="bi my-dropdown-item-check ms-auto"><use href="#check2"></use></svg>
-                  </button>
-                </li>
-                <li>
-                  <button class="dropdown-item d-flex align-items-center fw-semibold" type="button" data-language-value="ru" aria-pressed="false">
-                    <span class="me-2">Русский</span>
-                    <svg class="bi my-dropdown-item-check ms-auto"><use href="#check2"></use></svg>
+                  <button class="dropdown-item my-dropdown-item-theme" type="button" data-theme-val="dark" aria-pressed="false">
+                    <svg class="bi my-dropdown-item-icon"><use href="#moon-stars-fill"></use></svg>
+                    <span x-text="$t('dark')"></span>
+                    <svg class="bi my-dropdown-item-check"><use href="#check-lg"></use></svg>
                   </button>
                 </li>
               </ul>
-            </div>
-          </li>
-        </ul>
-      </header>
+            </li>
+            <li class="nav-item dropdown my-dropdown">
+              <a class="nav-link my-nav-link dropdown-toggle" id="btn-lang" role="button" data-bs-toggle="dropdown" tabindex="0" aria-expanded="false">
+                <svg class="bi"><use href="#translate"></use></svg>
+                <span class="my-nav-link-text">English</span>
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <button class="dropdown-item my-dropdown-item-lang active" type="button" data-locale="en" aria-pressed="true">
+                    <span>English</span>
+                    <svg class="bi my-dropdown-item-check"><use href="#check-lg"></use></svg>
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item my-dropdown-item-lang" type="button" data-locale="zh" aria-pressed="false">
+                    <span>中文</span>
+                    <svg class="bi my-dropdown-item-check"><use href="#check-lg"></use></svg>
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item my-dropdown-item-lang" type="button" data-locale="ru" aria-pressed="false">
+                    <span>Русский</span>
+                    <svg class="bi my-dropdown-item-check"><use href="#check-lg"></use></svg>
+                  </button>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    <div class="container my-container px-3 pb-3" x-data>
       <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-        <span class="fs-3 fw-bold me-auto" x-text="$t('subscription')"></span>
-        <div>
-          <button class="btn my-btn me-2" id="btn-copy-link" type="button" x-text="$t('copyLink')"></button>
-          <button class="btn my-btn" id="btn-show-qr" data-bs-toggle="modal" data-bs-target="#qr-modal">
-            <svg class="bi"><use href="#qr"></use></svg>
-          </button>
-        </div>
-        <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
-          <div class="toast my-toast" id="toast-copy-link" role="alert" aria-atomic="true" aria-live="assertive">
-            <div class="d-flex">
-              <div class="toast-body fs-6 fw-semibold">
-                <span x-text="$t('copiedToClipboard')"></span>
+        <h4 class="my-text-heading fw-bold me-auto mb-0" x-text="$t('subscription')"></h4>
+        <button class="btn my-btn-outline" data-bs-toggle="modal" data-bs-target="#get-link-modal" x-text="$t('getLink')"></button>
+        <div class="modal my-modal fade" id="get-link-modal" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="btn-close my-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <button type="button" class="btn-close btn-close-white m-auto me-3" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-          </div>
-        </div>
-        <div class="modal fade" id="qr-modal" tabindex="-1" aria-labelledby="qr-modal-label">
-          <div class="modal-sm modal-dialog modal-dialog-centered">
-            <div class="modal-content my-modal border border-0 rounded-4">
-              <div class="modal-header border border-0">
-                <h1 class="modal-title fs-5 fw-bold me-auto" id="qr-modal-label" x-text="$t('subscription')"></h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body d-flex align-items-center justify-content-center">
-                <div id="qr-code"></div>
+              <div class="modal-body text-center" x-data="copyLink">
+                <div class="mb-4" id="qr-code"></div>
+                <h4 class="my-text-heading fw-semibold" x-text="$t('getLinkModalTitle')"></h4>
+                <p class="my-text-content" x-text="$t('getLinkModalSubtitle')"></p>
+                <button class="btn my-btn-neutral" @click="copyToClipboard" :disabled="isDisabled" x-text="isDisabled ? $t('copied') : $t('copyLink')"></button>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="row row-cols-2 row-cols-sm-4 g-3 mb-5">
+      <div class="row my-row-xs row-cols-2 row-cols-md-4 g-3 mb-5">
         <div class="col">
-          <div class="my-block d-flex flex-column h-100">
-            {% if user.status.value == 'active' %}
-            <svg class="bi my-color-green fs-4 mb-2"><use href="#emoji-smile-fill"></use></svg>
-            {% else %}
-            <svg class="bi my-color-red fs-4 mb-2"><use href="#emoji-frown-fill"></use></svg>
-            {% endif %}
-            <span class="fs-5 fw-bold" x-text="$t('status')"></span>
-            {% if user.status.value == 'active' %}
-            <span class="fw-semibold" x-text="$t('active')"></span>
-            {% elif user.status.value == 'limited' %}
-            <span class="fw-semibold" x-text="$t('limited')"></span>
-            {% elif user.status.value == 'expired' %}
-            <span class="fw-semibold" x-text="$t('expired')"></span>
-            {% elif user.status.value == 'disabled' %}
-            <span class="fw-semibold" x-text="$t('disabled')"></span>
-            {% endif %}
+          <div class="my-block" x-data="blockName">
+            <div class="d-flex flex-row flex-sm-column align-items-center align-items-sm-start mb-1 mb-sm-0">
+              <svg class="bi my-text-blue me-2 mb-0 mb-sm-2"><use href="#person-fill"></use></svg>
+              <h5 class="my-text-heading mb-0" x-text="$t('name')"></h5>
+            </div>
+            <p class="text-truncate my-text-content mb-0" x-text="getText"></p>
           </div>
         </div>
         <div class="col">
-          <div class="my-block d-flex flex-column h-100">
-            <svg class="bi my-color-red fs-4 mb-2"><use href="#calendar3"></use></svg>
-            <span class="fs-5 fw-bold" x-text="$t('duration')"></span>
-            {% if not user.expire %}
-            <span class="fw-semibold" x-text="$t('forever')"></span>
-            {% else %}
-            <!-- Can it be done better? -->
-            {% set date = (user.expire | datetime).split()[0].split('-')[::-1] %}
-            <span class="fw-semibold">
-              <span x-text="$t('until')"></span>
-              {{ '.'.join(date) }}
-            </span>
-            {% endif %}
+          <div class="my-block" x-data="blockStatus">
+            <div class="d-flex flex-row flex-sm-column align-items-center align-items-sm-start mb-1 mb-sm-0">
+              <svg class="bi my-text-green me-2 mb-0 mb-sm-2"><use :href="getIcon"></use></svg>
+              <h5 class="my-text-heading mb-0" x-text="$t('status')"></h5>
+            </div>
+            <p class="text-truncate my-text-content mb-0" x-text="getText"></p>
           </div>
         </div>
         <div class="col">
-          <div class="my-block d-flex flex-column h-100">
-            <svg class="bi my-color-blue fs-4 mb-2"><use href="#arrow-down-up"></use></svg>
-            <span class="fs-5 fw-bold" x-text="$t('traffic')"></span>
-            <span class="fw-semibold">
-              {{ user.used_traffic | bytesformat }}
-              <span x-text="$t('of')"></span>
-              {% if not user.data_limit %}∞{% else %}
-              {{ user.data_limit | bytesformat }}
-              {% endif %}
-            </span>
+          <div class="my-block" x-data="blockDuration">
+            <div class="d-flex flex-row flex-sm-column align-items-center align-items-sm-start mb-1 mb-sm-0">
+              <svg class="bi my-text-red me-2 mb-0 mb-sm-2"><use href="#calendar3"></use></svg>
+              <h5 class="my-text-heading mb-0" x-text="$t('duration')"></h5>
+            </div>
+            <p class="text-truncate my-text-content mb-0" x-text="getText"></p>
           </div>
         </div>
         <div class="col">
-          <div class="my-block d-flex flex-column h-100">
-            <svg class="bi my-color-yellow fs-4 mb-2"><use href="#repeat"></use></svg>
-            <span class="fs-5 fw-bold" x-text="$t('trafficReset')"></span>
-            {% if user.data_limit_reset_strategy == 'no_reset' %}
-            <span class="fw-semibold" x-text="$t('no')"></span>
-            {% elif user.data_limit_reset_strategy == 'day' %}
-            <span class="fw-semibold" x-text="$t('daily')"></span>
-            {% elif user.data_limit_reset_strategy == 'week' %}
-            <span class="fw-semibold" x-text="$t('weekly')"></span>
-            {% elif user.data_limit_reset_strategy == 'month' %}
-            <span class="fw-semibold" x-text="$t('monthly')"></span>
-            {% elif user.data_limit_reset_strategy == 'year' %}
-            <span class="fw-semibold" x-text="$t('yearly')"></span>
-            {% endif %}
+          <div class="my-block" x-data="blockTraffic">
+            <div class="d-flex flex-row flex-sm-column align-items-center align-items-sm-start mb-1 mb-sm-0">
+              <svg class="bi my-text-yellow me-2 mb-0 mb-sm-2"><use href="#arrow-down-up"></use></svg>
+              <h5 class="my-text-heading mb-0" x-text="$t('traffic')"></h5>
+            </div>
+            <p class="text-truncate my-text-content mb-0" x-text="getText"></p>
           </div>
         </div>
       </div>
       <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-        <span class="fs-3 fw-bold me-auto" x-text="$t('guide')"></span>
-        <div class="dropdown">
-          <button class="nav-link my-nav-link dropdown-toggle d-flex align-items-center" id="btn-guide" type="button" data-bs-toggle="dropdown">
-            <svg class="bi my-dropdown-icon-active fs-5 me-2"><use href="#pc-display"></use></svg>
-            <span class="my-dropdown-text-active fw-semibold"></span>
+        <h4 class="my-text-heading fw-bold me-auto mb-0" x-text="$t('guide')"></h4>
+        <div class="dropdown my-dropdown">
+          <button class="nav-link my-nav-outline dropdown-toggle" id="btn-guide" type="button" data-bs-toggle="dropdown">
+            <svg class="bi my-nav-link-icon"><use href="#android"></use></svg>
+            <span class="my-nav-link-text"></span>
           </button>
-          <ul class="dropdown-menu my-dropdown-menu" role="tablist">
+          <ul class="dropdown-menu" role="tablist">
             <li>
-              <button class="dropdown-item active d-flex align-items-center fw-semibold" type="button" data-bs-target="#tab-pc" data-bs-toggle="tab" role="tab" aria-controls="tab-pc" aria-selected="true">
-                <svg class="bi my-dropdown-item-icon me-2"><use href="#pc-display"></use></svg>
-                <span class="me-2" x-text="$t('pc')"></span>
-                <svg class="bi my-dropdown-item-check ms-auto"><use href="#check2"></use></svg>
+              <button class="dropdown-item my-dropdown-item-guide active" id="btn-guide-android-tab" type="button" data-bs-target="#tab-android" data-bs-toggle="tab" role="tab" aria-controls="tab-android" aria-selected="true">
+                <svg class="bi my-dropdown-item-icon"><use href="#android"></use></svg>
+                <span>Android</span>
+                <svg class="bi my-dropdown-item-check"><use href="#check-lg"></use></svg>
               </button>
             </li>
             <li>
-              <button class="dropdown-item d-flex align-items-center fw-semibold" type="button" data-bs-target="#tab-android" data-bs-toggle="tab" role="tab" aria-controls="tab-android" aria-selected="false">
-                <svg class="bi my-dropdown-item-icon me-2"><use href="#android"></use></svg>
-                <span class="me-2">Android</span>
-                <svg class="bi my-dropdown-item-check ms-auto"><use href="#check2"></use></svg>
+              <button class="dropdown-item my-dropdown-item-guide" id="btn-guide-ios-tab" type="button" data-bs-target="#tab-ios" data-bs-toggle="tab" role="tab" aria-controls="tab-ios" aria-selected="false">
+                <svg class="bi my-dropdown-item-icon"><use href="#apple"></use></svg>
+                <span>iOS</span>
+                <svg class="bi my-dropdown-item-check"><use href="#check-lg"></use></svg>
               </button>
             </li>
             <li>
-              <button class="dropdown-item d-flex align-items-center fw-semibold" type="button" data-bs-target="#tab-ios" data-bs-toggle="tab" role="tab" aria-controls="tab-ios" aria-selected="false">
-                <svg class="bi my-dropdown-item-icon me-2"><use href="#apple"></use></svg>
-                <span class="me-2">iOS</span>
-                <svg class="bi my-dropdown-item-check ms-auto"><use href="#check2"></use></svg>
+              <button class="dropdown-item my-dropdown-item-guide" id="btn-guide-pc-tab" type="button" data-bs-target="#tab-pc" data-bs-toggle="tab" role="tab" aria-controls="tab-pc" aria-selected="false">
+                <svg class="bi my-dropdown-item-icon"><use href="#pc-display"></use></svg>
+                <span x-text="$t('pc')"></span>
+                <svg class="bi my-dropdown-item-check"><use href="#check-lg"></use></svg>
               </button>
             </li>
           </ul>
         </div>
       </div>
       <div class="tab-content" role="tablist">
-        <div id="tab-pc" class="tab-pane fade show active" aria-labelledby="Guide for PC" role="tabpanel">
+        <div id="tab-android" class="tab-pane my-tab-pane fade show active" aria-labelledby="btn-guide-android-tab" role="tabpanel">
           <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
             <div class="col">
               <div class="my-block-big h-100">
-                <span class="my-step-icon"></span>
-                <h4 class="fw-bold" x-text="$t('guideContent.pc.first.title')"></h4>
-                <p class="fw-semibold" x-text="$t('guideContent.pc.first.subtitle')"></p>
-                <a class="icon-link my-color-blue link-underline link-underline-opacity-0 link-underline-opacity-50-hover" href="https://github.com/clash-verge-rev/clash-verge-rev/releases/latest" rel="noopener noreferrer" target="_blank">
-                  <span class="fw-semibold" x-text="$t('verge')"></span>
-                  <svg class="bi" aria-hidden="true"><use href="#arrow-right"></use></svg>
-                </a>
-                <br>
-                <a class="icon-link my-color-blue link-underline link-underline-opacity-0 link-underline-opacity-50-hover" href="https://github.com/libnyanpasu/clash-nyanpasu/releases/tag/pre-release" rel="noopener noreferrer" target="_blank">
-                  <span class="fw-semibold" x-text="$t('nyanpasu')"></span>
-                  <svg class="bi" aria-hidden="true"><use href="#arrow-right"></use></svg>
+                <span class="my-step-counter mb-1"></span>
+                <h5 class="my-text-heading fw-semibold" x-text="$t('guideContent.android.first.title')"></h5>
+                <p class="my-text-content" x-html="$t('guideContent.android.first.text')"></p>
+                <a class="btn my-btn-secondary" href="https://github.com/MetaCubeX/ClashMetaForAndroid/releases/latest" role="button" rel="noopener noreferrer" target="_blank">
+                  <span class="fw-semibold" x-text="$t('downloadGitHub')"></span>
                 </a>
               </div>
             </div>
             <div class="col">
               <div class="my-block-big h-100">
-                <span class="my-step-icon"></span>
-                <h4 class="fw-bold" x-text="$t('guideContent.pc.second.title')"></h4>
-                <p class="fw-semibold" x-text="$t('guideContent.pc.second.subtitle')"></p>
-                <a class="icon-link my-color-blue link-underline link-underline-opacity-0 link-underline-opacity-50-hover" href="clash://install-config?url={{ user.subscription_url }}/clash-meta&name={{ user.username }}" rel="noopener noreferrer" target="_blank">
-                  <span class="fw-semibold" x-text="$t('addSubscription')"></span>
-                  <svg class="bi" aria-hidden="true"><use href="#arrow-right"></use></svg>
-                </a>
+                <span class="my-step-counter mb-1"></span>
+                <h5 class="my-text-heading fw-semibold" x-text="$t('guideContent.android.second.title')"></h5>
+                <p class="my-text-content" x-html="$t('guideContent.android.second.text')"></p>
+                <a class="btn my-btn-primary fw-semibold" id="sub-url-android" role="button" rel="noopener noreferrer" target="_blank" x-text="$t('addSubscription')"></a>
               </div>
             </div>
             <div class="col">
               <div class="my-block-big h-100">
-                <span class="my-step-icon"></span>
-                <h4 class="fw-bold" x-text="$t('guideContent.pc.third.title')"></h4>
-                <span class="fw-semibold" x-text="$t('guideContent.pc.third.subtitle')"></span>
-                <br><span class="fw-semibold" x-text="$t('guideContent.pc.third.nyanpasuguide')"></span>
+                <span class="my-step-counter mb-1"></span>
+                <h5 class="my-text-heading fw-semibold" x-text="$t('guideContent.android.third.title')"></h5>
+                <p class="my-text-content mb-0" x-html="$t('guideContent.android.third.text')"></p>
               </div>
             </div>
           </div>
         </div>
-        <div id="tab-android" class="tab-pane fade" aria-labelledby="Guide for Android" role="tabpanel">
+        <div id="tab-ios" class="tab-pane my-tab-pane fade" aria-labelledby="btn-guide-ios-tab" role="tabpanel">
           <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
             <div class="col">
               <div class="my-block-big h-100">
-                <span class="my-step-icon"></span>
-                <h4 class="fw-bold" x-text="$t('guideContent.android.first.title')"></h4>
-                <p class="fw-semibold" x-text="$t('guideContent.android.first.subtitle')"></p>
-                <a class="icon-link my-color-blue link-underline link-underline-opacity-0 link-underline-opacity-50-hover" href="https://github.com/MetaCubeX/ClashMetaForAndroid/releases/download/v2.11.5/cmfa-2.11.5-meta-universal-release.apk" rel="noopener noreferrer" target="_blank">
-                  <span class="fw-semibold" x-text="$t('openPage')"></span>
-                  <svg class="bi" aria-hidden="true"><use href="#arrow-right"></use></svg>
+                <span class="my-step-counter mb-1"></span>
+                <h5 class="my-text-heading fw-semibold" x-text="$t('guideContent.ios.first.title')"></h5>
+                <p class="my-text-content" x-html="$t('guideContent.ios.first.text')"></p>
+                <a class="btn my-btn-secondary" href="https://apps.apple.com/app/sing-box-vt/id6673731168" role="button" rel="noopener noreferrer" target="_blank">
+                  <span class="fw-semibold" x-text="$t('openInApp', {app: 'App Store'})"></span>
                 </a>
               </div>
             </div>
             <div class="col">
               <div class="my-block-big h-100">
-                <span class="my-step-icon"></span>
-                <h4 class="fw-bold" x-text="$t('guideContent.android.second.title')"></h4>
-                <p class="fw-semibold" x-text="$t('guideContent.android.second.subtitle')"></p>
-                <a class="icon-link my-color-blue link-underline link-underline-opacity-0 link-underline-opacity-50-hover" href="clash://install-config?url={{ user.subscription_url }}/clash-meta&name={{ user.username }}" rel="noopener noreferrer" target="_blank">
-                  <span class="fw-semibold" x-text="$t('addSubscription')"></span>
-                  <svg class="bi" aria-hidden="true"><use href="#arrow-right"></use></svg>
-                </a>
+                <span class="my-step-counter mb-1"></span>
+                <h5 class="my-text-heading fw-semibold" x-text="$t('guideContent.ios.second.title')"></h5>
+                <p class="my-text-content" x-html="$t('guideContent.ios.second.text')"></p>
+                <a class="btn my-btn-primary fw-semibold" id="sub-url-ios" role="button" rel="noopener noreferrer" target="_blank" x-text="$t('addSubscription')"></a>
               </div>
             </div>
             <div class="col">
               <div class="my-block-big h-100">
-                <span class="my-step-icon"></span>
-                <h4 class="fw-bold" x-text="$t('guideContent.android.third.title')"></h4>
-                <span class="fw-semibold" x-text="$t('guideContent.android.third.subtitle')"></span>
+                <span class="my-step-counter mb-1"></span>
+                <h5 class="my-text-heading fw-semibold" x-text="$t('guideContent.ios.third.title')"></h5>
+                <p class="my-text-content mb-0" x-html="$t('guideContent.ios.third.text')"></p>
               </div>
             </div>
           </div>
         </div>
-        <div id="tab-ios" class="tab-pane fade" aria-labelledby="Guide for iOS" role="tabpanel">
+        <div id="tab-pc" class="tab-pane my-tab-pane fade" aria-labelledby="btn-guide-pc-tab" role="tabpanel">
           <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
             <div class="col">
               <div class="my-block-big h-100">
-                <span class="my-step-icon"></span>
-                <h4 class="fw-bold" x-text="$t('guideContent.ios.first.title')"></h4>
-                <p class="fw-semibold" x-text="$t('guideContent.ios.first.subtitle')"></p>
-                <a class="icon-link my-color-blue link-underline link-underline-opacity-0 link-underline-opacity-50-hover" href="https://apps.apple.com/app/sing-box-vt/id6673731168" rel="noopener noreferrer" target="_blank">
-                  <span class="fw-semibold" x-text="$t('openPage')"></span>
-                  <svg class="bi" aria-hidden="true"><use href="#arrow-right"></use></svg>
-                </a>
+                <span class="my-step-counter mb-1"></span>
+                <h5 class="my-text-heading fw-semibold" x-text="$t('guideContent.pc.first.title')"></h5>
+                <p class="my-text-content" x-html="$t('guideContent.pc.first.text')"></p>
+                <div class="d-flex flex-wrap gap-2">
+                  <a class="btn my-btn-secondary" href="https://github.com/libnyanpasu/clash-nyanpasu/releases/tag/pre-release" role="button" rel="noopener noreferrer" target="_blank">
+                    <span class="fw-semibold" x-text="$t('nyanpasu')"></span>
+                  </a>
+                  <a class="btn my-btn-secondary" href="https://github.com/clash-verge-rev/clash-verge-rev/releases/latest" role="button" rel="noopener noreferrer" target="_blank">
+                    <span class="fw-semibold" x-text="$t('verge')"></span>
+                  </a>
+                </div>
               </div>
             </div>
             <div class="col">
               <div class="my-block-big h-100">
-                <span class="my-step-icon"></span>
-                <h4 class="fw-bold" x-text="$t('guideContent.ios.second.title')"></h4>
-                <p class="fw-semibold" x-text="$t('guideContent.ios.second.subtitle')"></p>
-                <a class="icon-link my-color-blue link-underline link-underline-opacity-0 link-underline-opacity-50-hover" href="sing-box://import-remote-profile?url={{ user.subscription_url }}#{{ user.username }}" rel="noopener noreferrer" target="_blank">
-                  <span class="fw-semibold" x-text="$t('addSubscription')"></span>
-                  <svg class="bi" aria-hidden="true"><use href="#arrow-right"></use></svg>
-                </a>
+                <span class="my-step-counter mb-1"></span>
+                <h5 class="my-text-heading fw-semibold" x-text="$t('guideContent.pc.second.title')"></h5>
+                <p class="my-text-content" x-html="$t('guideContent.pc.second.text')"></p>
+                <a class="btn my-btn-primary fw-semibold" id="sub-url-pc" role="button" rel="noopener noreferrer" target="_blank" x-text="$t('addSubscription')"></a>
               </div>
             </div>
             <div class="col">
               <div class="my-block-big h-100">
-                <span class="my-step-icon"></span>
-                <h4 class="fw-bold" x-text="$t('guideContent.ios.third.title')"></h4>
-                <span class="fw-semibold" x-text="$t('guideContent.ios.third.subtitle')"></span>
+                <span class="my-step-counter mb-1"></span>
+                <h5 class="my-text-heading fw-semibold" x-text="$t('guideContent.pc.third.title')"></h5>
+                <p class="my-text-content mb-0" x-html="$t('guideContent.pc.third.nyanpasuguide')"></p>
+                <p class="my-text-content mb-0" x-html="$t('guideContent.pc.third.text')"></p>
+                
               </div>
             </div>
           </div>
@@ -553,15 +698,27 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs-i18n@2.x.x/dist/cdn.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+    <script src="https://unpkg.com/qr-code-styling@1.9.1/lib/qr-code-styling.js"></script>
     <script>
-      const META_THEME_COLORS = {light: '#fff', dark: '#151515'};
+      const SUB_URL = window.location.href;
+
+      // URL schemes for quick subscription import.
+      const SUB_URL_SCHEMES = {
+        pc: `clash://install-config?url={{ user.subscription_url }}/clash-meta&name={{ user.username }}`,
+        android: `clash://install-config?url={{ user.subscription_url }}/clash-meta&name={{ user.username }}`,
+        ios: `sing-box://import-remote-profile?url={{ user.subscription_url }}#{{ user.username }}`,
+      };
+      // Default locale used to display content if
+      // the user's locale is not specified.
+      const DEFAULT_LOCALE = 'en';
+      // Translation data.
       const MESSAGES = {
         en: {
           support: 'Support',
           system: 'System',
           light: 'Light',
           dark: 'Dark',
+          name: 'Name',
           status: 'Status',
           active: 'Active',
           limited: 'Limited',
@@ -571,64 +728,61 @@
           until: 'Until',
           forever: 'Forever',
           traffic: 'Traffic',
-          of: 'of',
-          trafficReset: 'Traffic Reset',
-          no: 'No',
-          daily: 'Daily',
-          weekly: 'Weekly',
-          monthly: 'Monthly',
-          yearly: 'Yearly',
           subscription: 'Subscription',
+          getLink: 'Get link',
+          getLinkModalTitle: 'Scan the QR code above in the client',
+          getLinkModalSubtitle: 'Simple subscription addition in any client. Another option: copy the link below and paste it into the client',
           copyLink: 'Copy link',
-          copiedToClipboard: 'Copied to clipboard',
+          copied: 'Copied',
           guide: 'Guide',
           pc: 'PC',
-          openPage: 'Open page',
+          openInApp: 'Open in {app}',
+          downloadGitHub: 'Download from GitHub',
           addSubscription: 'Add subscription',
-          verge: 'Clash Verge Rev',
           nyanpasu: 'Clash Nyanpasu',
+          verge: 'Clash Verge Rev',
           guideContent: {
             pc: {
               first: {
                 title: 'Install and open the Mihomo client',
-                subtitle: `Go to the latest release page on GitHub. Download the file for your OS and install the application. Make sure to launch the app before adding a subscription.`,
+                text: `Go to the latest release page on GitHub. Download the file for your OS and install the application. Make sure to launch the app before adding a subscription.`,
               },
               second: {
                 title: 'Add the subscription',
-                subtitle: `Click the button below — the application will open, and the subscription will be added automatically. If this doesn't happen (Profiles section is empty), close the app and try again, or manually add the subscription in the Profiles section by entering the URL in the Profile URL field (copy the link above) and clicking the Import button.`,
+                text: `Click the button below — the application will open, and the subscription will be added automatically. If this doesn't happen (Profiles section is empty), close the app and try again, or manually add the subscription in the Profiles section by entering the URL in the Profile URL field (copy the link above) and clicking the Import button.`,
               },
               third: {
                 title: 'Connect and enjoy',
-                subtitle: `· Clash Verge Rev: In the app menu, go to Settings, and in the System Settings section, switch the Tun parameter to Enabled.`,
+                text: `· Clash Verge Rev: In the app menu, go to Settings, and in the System Settings section, switch the Tun parameter to Enabled.`,
                 nyanpasuguide: `· Clash Nyanpasu: Go to the Dashboard and enable Tun mode (you must first run the program with administrator rights)`,
               },
             },
             android: {
               first: {
                 title: 'Install and Open Clash Meta',
-                subtitle: `Open the GitHub page and install the app. Launch it.`,
+                text: `Open the GitHub page and install the app. Launch it.`,
               },
               second: {
                 title: 'Add the subscription',
-                subtitle: `Click the button below — a profile creation window will open. You need to set up auto-update, e.g., 720 minutes. In the top right corner, click the save icon.`,
+                text: `Click the button below — a profile creation window will open. You need to set up auto-update, e.g., 720 minutes. In the top right corner, click the save icon.`,
               },
               third: {
                 title: 'Connect and enjoy',
-                subtitle: `Go back, open the 'Profiles' tab, and select the created profile. Go back again and connect to the profile by clicking the 'Stopped' button to start the profile or 'Running' to stop it.`,
+                text: `Go back, open the 'Profiles' tab, and select the created profile. Go back again and connect to the profile by clicking the 'Stopped' button to start the profile or 'Running' to stop it.`,
               },
             },
             ios: {
               first: {
                 title: 'Install and Open sing-box VT',
-                subtitle: `Open the App Store page and install the app. Launch the app, and when prompted to allow VPN configuration additions, tap 'Allow' and enter your passcode.`,
+                text: `Open the App Store page and install the app. Launch the app, and when prompted to allow VPN configuration additions, tap 'Allow' and enter your passcode.`,
               },
               second: {
                 title: 'Add the subscription',
-                subtitle: `"Click the button below, and in the window that appears, click 'Open' — the app will open. Confirm the import by first clicking the Import button, then the Create button.`,
+                text: `"Click the button below, and in the window that appears, click 'Open' — the app will open. Confirm the import by first clicking the Import button, then the Create button.`,
               },
               third: {
                 title: 'Connect and enjoy',
-                subtitle: `On the Dashboard main page, click the Enabled button to connect to the VPN. Enjoy :)`,
+                text: `On the Dashboard main page, click the Enabled button to connect to the VPN. Enjoy :)`,
               },
             },
           },
@@ -638,6 +792,7 @@
           system: '系统',
           light: '浅色',
           dark: '深色',
+          name: '名字',
           status: '状态',
           active: '激活',
           limited: '受限',
@@ -647,64 +802,61 @@
           until: '直到',
           forever: '永久',
           traffic: '流量',
-          of: '的',
-          trafficReset: '流量重置',
-          no: '无',
-          daily: '每日',
-          weekly: '每周',
-          monthly: '每月',
-          yearly: '每年',
           subscription: '订阅',
+          getLink: '获取链接',
+          getLinkModalTitle: '在客户端扫描上方二维码',
+          getLinkModalSubtitle: '简单地在任何客户端添加订阅。还有另一种方法：复制下面的链接并粘贴到客户端中。',
           copyLink: '复制链接',
-          copiedToClipboard: '已复制到剪贴板',
+          copied: '已复制',
           guide: '指南',
           pc: '电脑',
-          openPage: '打开页面',
+          openInApp: '在 {app} 中打开',
+          downloadGitHub: '从 GitHub 下载',
           addSubscription: '添加订阅',
-          verge: 'Clash Verge Rev',
           nyanpasu: 'Clash Nyanpasu',
+          verge: 'Clash Verge Rev',
           guideContent: {
             pc: {
               first: {
                 title: '安装并打开 mihomo',
-                subtitle: `前往 GitHub 的最新发布页面。下载适合您的操作系统的文件并安装应用程序。安装后，请务必启动应用程序，然后再添加订阅。`,
+                text: `前往 GitHub 的最新发布页面。下载适合您的操作系统的文件并安装应用程序。安装后，请务必启动应用程序，然后再添加订阅。`,
               },
               second: {
                 title: '添加订阅',
-                subtitle: `点击下方按钮 — 应用程序将自动打开并添加订阅。如果未成功（“配置文件”部分为空），请关闭应用程序并重试，或通过“配置文件”部分手动添加订阅。复制上方链接并粘贴到“配置文件 URL”字段，然后点击“导入”。`,
+                text: `点击下方按钮 — 应用程序将自动打开并添加订阅。如果未成功（“配置文件”部分为空），请关闭应用程序并重试，或通过“配置文件”部分手动添加订阅。复制上方链接并粘贴到“配置文件 URL”字段，然后点击“导入”。`,
               },
               third: {
                 title: '连接并享受',
-                subtitle: `· Clash Verge Rev: 在应用程序菜单中，进入“设置”部分，在“系统设置”中将 Tun 参数切换为“启用”。`,
+                text: `· Clash Verge Rev: 在应用程序菜单中，进入“设置”部分，在“系统设置”中将 Tun 参数切换为“启用”。`,
                 nyanpasuguide: `· Clash Nyanpasu：转到仪表板并启用 Tun 模式（您必须首先以管理员权限运行该程序）`,
               },
             },
             android: {
               first: {
                 title: '安装并打开 Clash Meta',
-                subtitle: `打开 GitHub 页面并安装应用程序。安装完成后启动应用程序。`,
+                text: `打开 GitHub 页面并安装应用程序。安装完成后启动应用程序。`,
               },
               second: {
                 title: '添加订阅',
-                subtitle: `点击下方按钮 — 将打开一个创建配置文件的窗口，您需要设置自动更新，例如 720 分钟。在右上角点击保存图标。`,
+                text: `点击下方按钮 — 将打开一个创建配置文件的窗口，您需要设置自动更新，例如 720 分钟。在右上角点击保存图标。`,
               },
               third: {
                 title: '连接并享受',
-                subtitle: `返回并进入“配置文件”选项卡，选择创建的配置文件。返回后，通过点击“停止”按钮启动配置文件，或点击“运行”按钮停止配置文件。`,
+                text: `返回并进入“配置文件”选项卡，选择创建的配置文件。返回后，通过点击“停止”按钮启动配置文件，或点击“运行”按钮停止配置文件。`,
               },
             },
             ios: {
               first: {
                 title: '安装并打开 sing-box VT',
-                subtitle: `"打开 App Store 页面并安装应用程序。启动应用程序后，在 VPN 配置权限窗口点击“允许”，然后输入您的密码。`,
+                text: `"打开 App Store 页面并安装应用程序。启动应用程序后，在 VPN 配置权限窗口点击“允许”，然后输入您的密码。`,
               },
               second: {
                 title: '添加订阅',
-                subtitle: `点击下方按钮，在弹出窗口中点击“打开” — 应用程序将会打开。确认导入时，先点击“导入”按钮，然后点击“创建”按钮。`,
+                text: `点击下方按钮，在弹出窗口中点击“打开” — 应用程序将会打开。确认导入时，先点击“导入”按钮，然后点击“创建”按钮。`,
               },
               third: {
                 title: '连接并使用',
-                subtitle: `在主页面 Dashboard，点击“启用”按钮以连接到 VPN。`,
+                text: `在主页面 Dashboard，点击“启用”按钮以连接到 VPN。`,
               },
             },
           },
@@ -714,6 +866,7 @@
           system: 'Системная',
           light: 'Светлая',
           dark: 'Темная',
+          name: 'Имя',
           status: 'Статус',
           active: 'Активна',
           limited: 'Ограничена',
@@ -723,76 +876,74 @@
           until: 'До',
           forever: 'Навсегда',
           traffic: 'Трафик',
-          of: 'из',
-          trafficReset: 'Сброс трафика',
-          no: 'Нет',
-          daily: 'Ежедневно',
-          weekly: 'Еженедельно',
-          monthly: 'Ежемесячно',
-          yearly: 'Ежегодно',
           subscription: 'Подписка',
+          getLink: 'Получить ссылку',
+          getLinkModalTitle: 'Отсканируй QR-код выше в клиенте',
+          getLinkModalSubtitle: 'Простое добавление подписки в любой клиент. Есть и другой вариант: скопируй ссылку ниже и вставь в клиент',
           copyLink: 'Скопировать ссылку',
-          copiedToClipboard: 'Скопировано в буфер обмена',
+          copied: 'Скопировано',
           guide: 'Инструкция',
           pc: 'ПК',
-          openPage: 'Открыть страницу',
+          openInApp: 'Открыть в {app}',
+          downloadGitHub: 'Скачать с GitHub',
           addSubscription: 'Добавить подписку',
-          verge: 'Clash Verge Rev',
           nyanpasu: 'Clash Nyanpasu',
+          verge: 'Clash Verge Rev',
           guideContent: {
             pc: {
               first: {
                 title: 'Установи и открой клиент Mihomo',
-                subtitle: `Перейди на страницу последнего релиза на GitHub. Скачай
-                файл для своей ОС и установи приложение. Перед добавлением подписки обязательно запусти его.`,
+                text: `Перейди на страницу последнего релиза на <b>GitHub</b>. Скачай
+                файл для своей ОС и установи программу. Перед добавлением подписки обязательно <b>запусти ее</b>.`,
               },
               second: {
                 title: 'Добавь подписку',
-                subtitle: `Нажми кнопку ниже — приложение откроется, и подписка
-                добавится автоматически. Если этого не произошло (раздел "Профили" пустой), закрой приложение
-                и попробуй снова или добавь подписку вручную через раздел "Профили": в строке "URL профиля" укажи ссылку (скопировав её выше) и нажми кнопку импорта.`,
+                text: `Нажми кнопку ниже — программа откроется, и подписка
+                добавится автоматически.<br>Если этого не произошло (раздел "Профили" пустой), закрой программу
+                и попробуй снова или добавь подписку вручную через раздел "Профили": в строке "URL профиля" укажи ссылку, скопировав ее выше, и нажми кнопку импорта.`,
               },
               third: {
                 title: 'Подключись и пользуйся',
-                subtitle: `• Clash Verge Rev: В меню приложения перейди в раздел "Настройки" и в пункте "Настройки системы" включи параметр Tun.`,
-                nyanpasuguide: `• Clash Nyanpasu: Перейди на главную страницу и включи режим Tun (предварительно требуется запустить программу с правами адмнистратора).`,
+                text: `• <b>Clash Verge Rev</b>: В меню приложения перейди в раздел "Настройки" и в пункте "Настройки системы" включи параметр <b>Tun</b>.`,
+                nyanpasuguide: `• <b>Clash Nyanpasu</b>: Перейди на главную страницу и включи режим <b>Tun</b>. Предварительно требуется запустить программу с правами адмнистратора.`,
+                
               },
             },
             android: {
               first: {
                 title: 'Установи и открой Clash Meta',
-                subtitle: `Скачай приложение по ссылке ниже, установи и запусти его.`,
+                text: `Скачай приложение по ссылке ниже, установи и запусти его.`,
               },
               second: {
                 title: 'Добавь подписку',
-                subtitle: `Нажми кнопку ниже — откроется окно создания профиля. Тебе потребуется указать период автообновления, например, 720 минут. Справа вверху нажми на кнопку "Сохранить".`,
+                text: `Нажми кнопку ниже — откроется окно создания профиля. Тебе потребуется указать период автообновления, например, 720 минут. Справа вверху нажми на кнопку "Сохранить".`,
               },
               third: {
                 title: 'Подключись и пользуйся',
-                subtitle: `Перейди в пункт "Профили" и выбери созданный профиль, затем вернись на главную страницу. Теперь ты можешь подключиться, нажав на кнопку "Остановлен", чтобы запустить VPN, или "Запущен", чтобы отключить его.`,
+                text: `Перейди в пункт <b>"Профили"</b> и выбери созданный профиль, затем вернись на <b>главную страницу</b>. Теперь ты можешь подключиться, нажав на кнопку <b>"Остановлен"</b>.`,
               },
             },
             ios: {
               first: {
                 title: 'Установи и открой sing-box VT',
-                subtitle: `Открой страницу в App Store и установи приложение.
-                Запусти приложение, в окне разрешения на добавление конфигураций VPN нажми «Разрешить» и введи свой код-пароль.`,
+                text: `Открой страницу в <b>App Store</b> и установи приложение.
+                Запусти приложение, в окне разрешения на добавление конфигураций VPN нажми <b>«Разрешить»</b> и введи свой <b>код-пароль</b>.`,
               },
               second: {
                 title: 'Добавь подписку',
-                subtitle: `Нажми на кнопку ниже и в появившемся окне нажми «Открыть»
-                — откроется приложение, и подверди импорт, сначала нажав кнопку Import, а затем Create.`,
+                text: `Нажми на кнопку ниже и в появившемся окне нажми <b>«Открыть»</b>
+                — откроется приложение. Подтверди импорт, сначала нажав кнопку <b>"Import"</b>, а затем <b>"Create"</b>.`,
               },
               third: {
                 title: 'Подключись и пользуйся',
-                subtitle: `На главной странице Dashboard нажми кнопку Enabled для подключения к VPN.`,
+                text: `На <b>главной странице Dashboard</b> нажми кнопку <b>Enabled</b> для подключения к VPN.`,
               },
             },
           },
         },
       };
-      
-      function getPreferredGuideTab() {
+
+      function getTabIdByDevice() {
         const userAgent = navigator.userAgent.toLowerCase();
         if (userAgent.includes('android')) {
           return '#tab-android';
@@ -803,122 +954,165 @@
         }
       }
       
-      function getPreferredLanguage() {
-        return (
-          localStorage.getItem('language') ||
-          (navigator.language || navigator.userLanguage).slice(0, 2)
+      function getUserLocale() {
+        const userLocale = (
+          localStorage.getItem('locale') ||
+          (navigator.language || navigator.userLanguage).split('-')[0]
         );
+        return userLocale in MESSAGES ? userLocale : DEFAULT_LOCALE;
       }
-      
-      function getPreferredTheme() {
-        return localStorage.getItem('theme') || 'system';
-      }
-      
-      function setTheme(theme) {
-        if (theme === 'system') {
-          theme = window.matchMedia('(prefers-color-scheme: dark)').matches
-            ? 'dark'
-            : 'light';
+
+      function showActiveDropdownItem(btn, newItem, prevItem) {
+        if (prevItem) {
+          bootstrap.Button.getOrCreateInstance(prevItem).toggle();
+          bootstrap.Button.getOrCreateInstance(newItem).toggle();
+        }
+
+        const btnIcon = btn.querySelector('.my-nav-link-icon use');
+        const newItemIcon = newItem.querySelector('.my-dropdown-item-icon use');
+        if (btnIcon && newItemIcon) {
+          btnIcon.setAttribute('href', newItemIcon.getAttribute('href'));
         }
       
-        document.documentElement.setAttribute('data-bs-theme', theme);
-        document
-          .querySelector(`[name='theme-color']`)
-          .setAttribute('content', META_THEME_COLORS[theme]);
-      }
-      
-      function showActiveDropdownButton(btn, selectedBtn, isIndependent) {
-        // Change dropdowns that can't be changed because
-        // they don't depend on Bootstrap.
-        if (isIndependent) {
-          const activeDropdownBtn = btn.nextElementSibling.querySelector('.active');
-          if (activeDropdownBtn) {
-            activeDropdownBtn.classList.remove('active');
-            activeDropdownBtn.setAttribute('aria-pressed', 'false');
-          }
-          
-          selectedBtn.classList.add('active');
-          selectedBtn.setAttribute('aria-pressed', 'true');
-        }
-      
-        const btnIcon = btn.querySelector('.my-dropdown-icon-active use');
-        const selectedBtnIcon = selectedBtn.querySelector('svg use');
-        if (btnIcon && selectedBtnIcon) {
-          btnIcon.setAttribute('href', selectedBtnIcon.getAttribute('href'));
-        }
-      
-        const btnText = btn.querySelector('.my-dropdown-text-active');
-        const selectedBtnText = selectedBtn.querySelector('span');
-        if (btnText && selectedBtnText) {
-          selectedBtnText.classList.remove('me-2');
-          btnText.innerHTML = selectedBtnText.outerHTML;
+        const btnText = btn.querySelector('.my-nav-link-text');
+        const newItemText = newItem.querySelector('span');
+        if (btnText && newItemText) {
+          btnText.innerHTML = newItemText.outerHTML;
         }
       }
-      
+
       document.addEventListener('alpine-i18n:ready', () => {
         window.AlpineI18n.fallbackLocale = 'en';
-        window.AlpineI18n.create(getPreferredLanguage(), MESSAGES);
-      
-        const btnLang = document.getElementById('btn-lang');
-        const btnPrefLang = document.querySelector(
-          `[data-language-value="${getPreferredLanguage()}"]`,
-        );
-        showActiveDropdownButton(btnLang, btnPrefLang, true);
-        document.querySelectorAll('[data-language-value]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            localStorage.setItem('language', btn.dataset.languageValue);
-            AlpineI18n.locale = btn.dataset.languageValue;
-            showActiveDropdownButton(btnLang, btn, true);
-          });
-        });
-      });
-      
-      document.addEventListener('DOMContentLoaded', () => {
-        setTheme(getPreferredTheme());
-        window.matchMedia('(prefers-color-scheme: dark)')
-          .addEventListener('change', () => {
-            if (getPreferredTheme() === 'system') setTheme('system');
-          });
-      
-        const btnTheme = document.getElementById('btn-theme');
-        const btnPrefTheme = document.querySelector(
-          `[data-theme-value="${getPreferredTheme()}"]`,
-        );
-        showActiveDropdownButton(btnTheme, btnPrefTheme, true);
-        document.querySelectorAll('[data-theme-value]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            localStorage.setItem('theme', btn.dataset.themeValue);
-            setTheme(btn.dataset.themeValue);
-            showActiveDropdownButton(btnTheme, btn, true);
-          });
-        });
-      
-        const btnGuide = document.getElementById('btn-guide');
-        const btnPrefGuideTab = document.querySelector(
-          `.dropdown-item[data-bs-target="${getPreferredGuideTab()}"]`,
-        );
-        bootstrap.Tab.getOrCreateInstance(btnPrefGuideTab).show();
-        showActiveDropdownButton(btnGuide, btnPrefGuideTab);
-        document.querySelectorAll('.dropdown-item[data-bs-target]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            showActiveDropdownButton(btnGuide, btn);
-          });
-        });
-      
-        const toastCopyLink = document.getElementById('toast-copy-link');
-        document.getElementById('btn-copy-link').addEventListener('click', () => {
-          navigator.clipboard.writeText('{{ user.subscription_url }}');
-          bootstrap.Toast.getOrCreateInstance(toastCopyLink).show();
-        });
+        window.AlpineI18n.create(getUserLocale(), MESSAGES);
 
-        const qrCode = new QRCode(document.getElementById('qr-code'), {
-          text: '{{ user.subscription_url }}',
-          width: 256,
-          height: 256,
-          colorDark: '#000',
-          colorLight: '#fff',
-          correctLevel: QRCode.CorrectLevel.H,
+        const btnLang = document.getElementById('btn-lang');
+        document.querySelectorAll('.my-dropdown-item-lang').forEach(item => {
+          item.addEventListener('click', () => {
+            localStorage.setItem('locale', item.dataset.locale);
+            AlpineI18n.locale = item.dataset.locale;
+            showActiveDropdownItem(
+              btnLang,
+              item,
+              document.querySelector('.my-dropdown-item-lang.active'),
+            );
+          });
         });
+        
+        showActiveDropdownItem(
+          btnLang,
+          document.querySelector(`[data-locale="${getUserLocale()}"]`),
+          document.querySelector('.my-dropdown-item-lang.active'),
+        );
+      });
+
+      document.addEventListener('alpine:init', () => {
+        Alpine.data('copyLink', () => ({
+          isDisabled: false,
+          copyToClipboard() {
+            navigator.clipboard.writeText(SUB_URL)
+            this.isDisabled = true;
+            setTimeout(() => {
+              this.isDisabled = false;
+            }, 3000);
+          },
+        }));
+
+        Alpine.data('blockName', () => ({
+          username: '{{ user.username }}',
+          getText() {
+            if (!this.username.startsWith('{')) {
+              return this.username;
+            } else {
+              return 'Unknown';
+            }
+          },
+        }));
+
+        Alpine.data('blockStatus', () => ({
+          statusValue: '{{ user.status.value }}',
+          getIcon() {
+            if (this.statusValue == 'active' ||
+                this.statusValue.startsWith('{')) {
+              return '#emoji-smile-fill';
+            } else {
+              return '#emoji-frown-fill';
+            }
+          },
+          getText() {
+            if (this.statusValue == 'active') {
+              return AlpineI18n.t('active');
+            } else if (this.statusValue == 'limited') {
+              return AlpineI18n.t('limited');
+            } else if (this.statusValue == 'expired') {
+              return AlpineI18n.t('expired');
+            } else if (this.statusValue == 'disabled') {
+              return AlpineI18n.t('disabled');
+            } else if (this.statusValue.startsWith('{')) {
+              return 'Unknown';
+            }
+          },
+        }));
+
+        Alpine.data('blockDuration', () => ({
+          expire: '{% if user.expire %}{{ user.expire | datetime }}{% endif %}',
+          getText() {
+            if (!this.expire) {
+              return AlpineI18n.t('forever');
+            } else if (!this.expire.startsWith('{')) {
+              const date = new Date(this.expire).toLocaleDateString();
+              return `${AlpineI18n.t('until')} ${date}`;
+            } else {
+              return 'Unknown';
+            }
+          },
+        }));
+
+        Alpine.data('blockTraffic', () => ({
+          usedTraffic: '{{ user.used_traffic | bytesformat }}',
+          dataLimit: '{% if user.data_limit %}{{ user.data_limit | bytesformat }}{% endif %}',
+          getText() {
+            if (!this.dataLimit) {
+              return `${this.usedTraffic} / ∞`;
+            } else if (!this.dataLimit.startsWith('{')) {
+              return `${this.usedTraffic} / ${this.dataLimit}`;
+            } else {
+              return 'Unknown';
+            }
+          },
+        }));
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const qrCode = new QRCodeStyling({
+          data: SUB_URL,
+          margin: 6,
+          dotsOptions: {
+            type: 'extra-rounded',
+          },
+          cornersSquareOptions: {
+            type: 'extra-rounded',
+          },
+        });
+        qrCode.append(document.getElementById('qr-code'));
+
+        const btnGuide = document.getElementById('btn-guide');
+        document.querySelectorAll('.my-dropdown-item-guide').forEach(item => {
+          item.addEventListener('click', () => {
+            showActiveDropdownItem(btnGuide, item);
+          });
+        });
+        
+        const itemInitialGuideTab =
+          `.my-dropdown-item-guide[data-bs-target="${getTabIdByDevice()}"]`;
+        bootstrap.Tab.getOrCreateInstance(itemInitialGuideTab).show();
+        showActiveDropdownItem(
+          btnGuide,
+          document.querySelector(itemInitialGuideTab),
+        );
+
+        for (const [os, url] of Object.entries(SUB_URL_SCHEMES)) {
+          document.getElementById(`sub-url-${os}`).href = url;
+        }
       });
     </script>
   </body>
