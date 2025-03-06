@@ -1,7 +1,7 @@
 <h3 align="center">Marzbanify Template fork</h3>
 
 <p align="center">
-  Simple, beautiful, and user-friendly HTML template for <a href="https://github.com/Gozargah/Marzban">Marzban</a> subscription page
+  Simple, beautiful, and user-friendly HTML template for <a href="https://github.com/Gozargah/Marzban">Marzban</a> & <a href="https://github.com/Jolymmiles/remnawave-json">remnawave-json</a> subscription page
   <br>
   Replaced apps:
   <br>
@@ -35,11 +35,15 @@
 - Guides are provided for PC, Android, and iOS.
 - Automatic detection of the user's theme, language, and device.
 
-# Installation
+# [Installation remnawave-json](https://github.com/Jolymmiles/remnawave-json?tab=readme-ov-file#-environment-variables)
+
+raw link: https://github.com/legiz-ru/marzbanify-template/raw/main/remnawave-json/index.html
+
+# Installation marzban
 
 1. Upload the file to the server.
 ```
-sudo wget -O /var/lib/marzban/templates/subscription/index.html https://raw.githubusercontent.com/dermv/marzbanify-template/main/index.html
+sudo wget -O /var/lib/marzban/templates/subscription/index.html https://github.com/legiz-ru/marzbanify-template/raw/main/index.html
 ```
 2. Enter these commands to automatically specify the file path to the subscription page.
 ```
