@@ -1,7 +1,7 @@
 <h3 align="center">Marzbanify Template fork</h3>
 
 <p align="center">
-  Simple, beautiful, and user-friendly HTML template for <a href="https://github.com/Gozargah/Marzban">Marzban</a> & <a href="https://github.com/Jolymmiles/remnawave-json">remnawave-json</a> subscription page
+  Simple, beautiful, and user-friendly HTML template for <a href="https://github.com/Gozargah/Marzban">Marzban</a>& <a href="https://github.com/legiz-ru/my-remnawave/blob/main/README.md#remnawave-subscription-page-custom-web-template">remnawave-subscription-page</a> & <a href="https://github.com/Jolymmiles/remnawave-json">remnawave-json(legacy)</a> subscription page
   <br>
   Replaced apps:
   <br>
